@@ -88,9 +88,6 @@ resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     allowRemoteVnetToUseHubVnetGateways: false
     enableInternetSecurity: true
     routingConfiguration: {
-      associatedRouteTable: {
-        id: virtualHubRouteTableId
-      }
       propagatedRouteTables: {
         labels: [
           'VNet'
