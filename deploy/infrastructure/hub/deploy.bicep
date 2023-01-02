@@ -7,62 +7,95 @@ param location string
 
 var bastionName = 'bas-management'
 
+resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
+  name: 'vwan-hub'
+  location: location
+  properties: any({
+    type: 'Standard'
+    disableVpnEncryption: false
+    allowBranchToBranchTraffic: false
+    allowVnetToVnetTraffic: false
+    office365LocalBreakoutCategory: 'Optimize'
+  })
+}
+
+resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
+  name: 'vwan-virtualhub'
+  location: location
+  properties: {
+    addressPrefix: '10.0.0.0/23'
+    virtualWan: {
+      id: virtualWan.id
+    }
+  }
+}
+
+resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2022-07-01' = {
+  name: 'rt-hub'
+  parent: virtualHub
+  properties: {
+    routes: [
+      {
+        name: 'Workload-SNToFirewall'
+        destinationType: 'CIDR'
+        destinations: [
+          '10.0.1.0/24'
+        ]
+        nextHopType: 'ResourceId'
+        nextHop: firewall.id
+      }
+      {
+        name: 'InternetToFirewall'
+        destinationType: 'CIDR'
+        destinations: [
+          '0.0.0.0/0'
+        ]
+        nextHopType: 'ResourceId'
+        nextHop: firewall.id
+      }
+    ]
+    labels: [
+      'VNet'
+    ]
+  }
+}
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
-  name: name
+  name: 'vnet-management'
   location: location
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/21'
+        '10.10.0.0/21'
       ]
     }
     subnets: [
       {
-        name: 'GatewaySubnet'
-        properties: {
-          addressPrefix: '10.0.0.0/24'
-          routeTable: {
-            id: gatewaySubnetRouteTableId
-          }
-        }
-      }
-      {
-        name: 'AzureFirewallSubnet'
-        properties: {
-          addressPrefix: '10.0.1.0/24'
-        }
-      }
-      {
         // For intrastructure resources e.g., DCs
         name: 'snet-infra'
         properties: {
-          addressPrefix: '10.0.2.0/24'
-          // If you further expand this demo, then most likely
-          // you need to implement route table for this specific
-          // subnet as well.
+          addressPrefix: '10.10.0.0/24'
         }
       }
       {
         // For our demo management subnet to host our VMs
         name: 'snet-management'
         properties: {
-          addressPrefix: '10.0.3.0/24'
+          addressPrefix: '10.10.1.0/24'
         }
       }
       {
         name: 'AzureBastionSubnet'
         properties: {
-          addressPrefix: '10.0.4.0/24'
+          addressPrefix: '10.10.2.0/24'
         }
       }
     ]
   }
 }
 
-var gatewaySubnetId = virtualNetwork.properties.subnets[0].id
-var firewallSubnetId = virtualNetwork.properties.subnets[1].id
-var managementSubnetId = virtualNetwork.properties.subnets[3].id
-var bastionSubnetId = virtualNetwork.properties.subnets[4].id
+var managementSubnetId = virtualNetwork.properties.subnets[1].id
+var bastionSubnetId = virtualNetwork.properties.subnets[2].id
 
 module vpn 'vpn.bicep' = {
   name: 'vpn-deployment'

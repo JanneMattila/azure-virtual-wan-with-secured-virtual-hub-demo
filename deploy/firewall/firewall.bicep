@@ -27,25 +27,20 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
       name: skuName
       tier: skuTier
     }
+    hubIPAddresses: {
+      publicIPs: {
+        count: 1
+      }
+    }
+    virtualHub: {
+      id: virtualHub.id
+    }
     firewallPolicy: {
       id: firewallPolicyId
     }
     applicationRuleCollections: []
     natRuleCollections: []
     networkRuleCollections: []
-    ipConfigurations: [
-      {
-        name: 'fw-pip1'
-        properties: {
-          subnet: {
-            id: ip.subnet
-          }
-          publicIPAddress: {
-            id: ip.publicIp
-          }
-        }
-      }
-    ]
   }
 }
 

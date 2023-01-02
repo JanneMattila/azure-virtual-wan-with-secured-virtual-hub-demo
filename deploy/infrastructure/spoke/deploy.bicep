@@ -77,6 +77,37 @@ module aci 'container-instances.bicep' = {
   }
 }
 
+resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+  parent: '${virtualNetwork.name}/spoke-to-hub'
+  name: 'hub-spoke'
+  dependsOn: [
+    firewall
+  ]
+  properties: {
+    remoteVirtualNetwork: {
+      id: virtualNetwork.id
+    }
+    allowHubToRemoteVnetTransit: true
+    allowRemoteVnetToUseHubVnetGateways: false
+    enableInternetSecurity: true
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: hubRouteTable.id
+      }
+      propagatedRouteTables: {
+        labels: [
+          'VNet'
+        ]
+        ids: [
+          {
+            id: hubRouteTable.id
+          }
+        ]
+      }
+    }
+  }
+}
+
 resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
   name: '${virtualNetwork.name}/spoke-to-hub'
   properties: {

@@ -225,3 +225,7 @@ is great blog post and was one inspiration to built this demo.
 further improve way how `ruleCollections` are passed on to the `ruleCollectionGroups`.
 
 [Virtual network traffic routing](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
+
+[Secured virtual hubs](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.network/fwm-docs-qs)
+
+[Type-checking Bicep arrays and objects](https://adrianhall.github.io/azure/2022/11/28/bicep-type-checking/)
