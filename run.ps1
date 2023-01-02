@@ -29,7 +29,7 @@ $username = "jumpboxuser"
 $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
-$resourceGroupName = "rg-azure-vwan-with-secured-hub-demo"
+$resourceGroupName = "rg-azure-vwan-with-secured-hub-demo2"
 
 # Run deployment in single command
 $global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName

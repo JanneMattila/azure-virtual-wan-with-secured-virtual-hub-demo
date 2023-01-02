@@ -5,7 +5,7 @@ param name string
   'AZFW_Hub'
   'AZFW_VNet'
 ])
-param skuName string = 'AZFW_VNet'
+param skuName string = 'AZFW_Hub'
 @allowed([
   'Premium'
   'Standard'
@@ -26,7 +26,6 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
     '3'
   ]
   properties: {
-    threatIntelMode: 'Alert'
     sku: {
       name: skuName
       tier: skuTier
@@ -58,3 +57,4 @@ module diagnosticSettings 'log-analytics.bicep' = {
 }
 
 output privateIPAddress string = firewall.properties.hubIPAddresses.privateIPAddress
+output id string = firewall.id

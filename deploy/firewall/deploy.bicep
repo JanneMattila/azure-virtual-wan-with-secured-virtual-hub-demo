@@ -15,7 +15,7 @@ module firewall 'firewall.bicep' = {
   name: 'firewall-deployment'
   params: {
     name: name
-    skuName: 'AZFW_VNet'
+    skuName: 'AZFW_Hub'
     skuTier: 'Standard'
     firewallPolicyId: firewallPolicy.outputs.id
     parentVirtualHubName: parentVirtualHubName
@@ -23,4 +23,5 @@ module firewall 'firewall.bicep' = {
   }
 }
 
+output firewallId string = firewall.outputs.id
 output firewallPrivateIp string = firewall.outputs.privateIPAddress

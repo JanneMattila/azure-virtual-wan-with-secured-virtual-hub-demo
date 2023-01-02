@@ -28,6 +28,8 @@ resource vpnSite 'Microsoft.Network/vpnSites@2021-03-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
+        // TODO: Validate
+        '192.168.0.0/23'
       ]
     }
     // Other properties to evaluate:

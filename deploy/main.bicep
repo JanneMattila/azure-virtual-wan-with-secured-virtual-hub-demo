@@ -1,46 +1,73 @@
-// param username string
-// @secure()
-// param password string
+param username string
+@secure()
+param password string
 param location string = resourceGroup().location
 
-resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
-  name: 'vwan-hub'
-  location: location
-  properties: {
-    type: 'Standard'
-    disableVpnEncryption: false
-    allowBranchToBranchTraffic: false
+var virtualHubName = 'vwan-virtualhub'
+var virtualHubRouteTableName = 'rt-hub'
+
+module vwan 'vwan/deploy.bicep' = {
+  name: 'vwan-resources-deployment'
+  params: {
+    location: location
+    virtualHubName: virtualHubName
   }
 }
-
-resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
-  name: 'vwan-virtualhub'
-  location: location
-  properties: {
-    addressPrefix: '10.0.0.0/23'
-    virtualWan: {
-      id: virtualWan.id
-    }
-  }
-}
-
-// module infrastructure 'infrastructure/deploy.bicep' = {
-//   name: 'infra-deployment'
-//   params: {
-//     username: username
-//     password: password
-//     location: location
-//   }
-// }
 
 module firewall 'firewall/deploy.bicep' = {
   name: 'firewall-resources-deployment'
   params: {
     location: location
-    parentVirtualHubName: virtualHub.name
+    parentVirtualHubName: virtualHubName
+  }
+  dependsOn: [
+    vwan
+  ]
+}
+
+resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2022-07-01' = {
+  name: '${virtualHubName}/${virtualHubRouteTableName}'
+  properties: {
+    routes: [
+      {
+        name: 'Workload-SNToFirewall'
+        destinationType: 'CIDR'
+        destinations: [
+          '10.0.1.0/24'
+        ]
+        nextHopType: 'ResourceId'
+        nextHop: firewall.outputs.firewallId
+      }
+      {
+        name: 'InternetToFirewall'
+        destinationType: 'CIDR'
+        destinations: [
+          '0.0.0.0/0'
+        ]
+        nextHopType: 'ResourceId'
+        nextHop: firewall.outputs.firewallId
+      }
+    ]
+    labels: [
+      'VNet'
+    ]
+  }
+  dependsOn: [
+    vwan
+  ]
+}
+
+module workloads 'workloads/deploy.bicep' = {
+  name: 'workloads-deployment'
+  params: {
+    parentVirtualHubName: virtualHubName
+    virtualHubRouteTableId: virtualHubRouteTable.id
+    username: username
+    password: password
+    location: location
   }
 }
 
 output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
-// output bastionName string = infrastructure.outputs.bastionName
-// output virtualMachineResourceId string = infrastructure.outputs.virtualMachineResourceId
+output bastionName string = workloads.outputs.bastionName
+output virtualMachineResourceId string = workloads.outputs.virtualMachineResourceId

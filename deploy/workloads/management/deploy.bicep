@@ -1,40 +1,14 @@
-param name string
+param parentVirtualHubName string
+param virtualHubRouteTableId string
 param username string
 @secure()
 param password string
-param gatewaySubnetRouteTableId string
 param location string
 
 var bastionName = 'bas-management'
 
-resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2022-07-01' = {
-  name: 'rt-hub'
-  parent: virtualHub
-  properties: {
-    routes: [
-      {
-        name: 'Workload-SNToFirewall'
-        destinationType: 'CIDR'
-        destinations: [
-          '10.0.1.0/24'
-        ]
-        nextHopType: 'ResourceId'
-        nextHop: firewall.id
-      }
-      {
-        name: 'InternetToFirewall'
-        destinationType: 'CIDR'
-        destinations: [
-          '0.0.0.0/0'
-        ]
-        nextHopType: 'ResourceId'
-        nextHop: firewall.id
-      }
-    ]
-    labels: [
-      'VNet'
-    ]
-  }
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+  name: parentVirtualHubName
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
@@ -71,17 +45,36 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-var managementSubnetId = virtualNetwork.properties.subnets[1].id
-var bastionSubnetId = virtualNetwork.properties.subnets[2].id
-
-module vpn 'vpn.bicep' = {
-  name: 'vpn-deployment'
-  params: {
-    name: 'vgw-vpn'
-    location: location
-    subnetId: gatewaySubnetId
+resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+  parent: parentVirtualHub
+  name: 'hub-management'
+  properties: {
+    remoteVirtualNetwork: {
+      id: virtualNetwork.id
+    }
+    allowHubToRemoteVnetTransit: true
+    allowRemoteVnetToUseHubVnetGateways: false
+    enableInternetSecurity: true
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: virtualHubRouteTableId
+      }
+      propagatedRouteTables: {
+        labels: [
+          'VNet'
+        ]
+        ids: [
+          {
+            id: virtualHubRouteTableId
+          }
+        ]
+      }
+    }
   }
 }
+
+var managementSubnetId = virtualNetwork.properties.subnets[1].id
+var bastionSubnetId = virtualNetwork.properties.subnets[2].id
 
 module bastion 'bastion.bicep' = {
   name: 'bastion-deployment'
@@ -106,8 +99,6 @@ module jumpbox 'jumpbox.bicep' = {
 output id string = virtualNetwork.id
 output name string = virtualNetwork.name
 output bastionName string = bastionName
-output gatewaySubnetId string = gatewaySubnetId
-output firewallSubnetId string = firewallSubnetId
 output managementSubnetId string = managementSubnetId
 output bastionSubnetId string = bastionSubnetId
 output virtualMachineResourceId string = jumpbox.outputs.virtualMachineResourceId

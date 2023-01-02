@@ -40,8 +40,8 @@ if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location 
 
 # Additional parameters that we pass to the template deployment
 $additionalParameters = New-Object -TypeName hashtable
-# $additionalParameters['username'] = $Username
-# $additionalParameters['password'] = $Password
+$additionalParameters['username'] = $Username
+$additionalParameters['password'] = $Password
 
 $result = New-AzResourceGroupDeployment `
     -DeploymentName $deploymentName `

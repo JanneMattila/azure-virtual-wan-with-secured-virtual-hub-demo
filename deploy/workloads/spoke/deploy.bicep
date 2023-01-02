@@ -1,12 +1,15 @@
+param parentVirtualHubName string
+param virtualHubRouteTableId string
 param spokeName string
 param vnetAddressSpace string
 param subnetAddressSpace string
-param hubName string
-param hubId string
-param routeTableId string
 param location string = resourceGroup().location
 
 var vnetName = 'vnet-${spokeName}'
+
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+  name: parentVirtualHubName
+}
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
   name: 'nsg-${spokeName}-front'
@@ -48,9 +51,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'snet-front'
         properties: {
           addressPrefix: subnetAddressSpace
-          routeTable: {
-            id: routeTableId
-          }
           networkSecurityGroup: {
             id: networkSecurityGroup.id
           }
@@ -77,12 +77,9 @@ module aci 'container-instances.bicep' = {
   }
 }
 
-resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
-  parent: '${virtualNetwork.name}/spoke-to-hub'
-  name: 'hub-spoke'
-  dependsOn: [
-    firewall
-  ]
+resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+  parent: parentVirtualHub
+  name: 'hub-${spokeName}'
   properties: {
     remoteVirtualNetwork: {
       id: virtualNetwork.id
@@ -92,7 +89,7 @@ resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     enableInternetSecurity: true
     routingConfiguration: {
       associatedRouteTable: {
-        id: hubRouteTable.id
+        id: virtualHubRouteTableId
       }
       propagatedRouteTables: {
         labels: [
@@ -100,36 +97,10 @@ resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
         ]
         ids: [
           {
-            id: hubRouteTable.id
+            id: virtualHubRouteTableId
           }
         ]
       }
     }
   }
 }
-
-resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
-  name: '${virtualNetwork.name}/spoke-to-hub'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    useRemoteGateways: true
-    remoteVirtualNetwork: {
-      id: hubId
-    }
-  }
-}
-
-resource HubToSpokePeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
-  name: '${hubName}/hub-to-${vnetName}'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowGatewayTransit: true
-    remoteVirtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
-
-output id string = virtualNetwork.id
-output subnetId string = virtualNetwork.properties.subnets[0].id
