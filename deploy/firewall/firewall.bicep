@@ -1,5 +1,5 @@
 param firewallPolicyId string
-param ip object
+param parentVirtualHubName string
 param name string
 @allowed([
   'AZFW_Hub'
@@ -12,6 +12,10 @@ param skuName string = 'AZFW_VNet'
 ])
 param skuTier string = 'Standard'
 param location string = resourceGroup().location
+
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+  name: parentVirtualHubName
+}
 
 resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
   name: name
@@ -33,7 +37,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
       }
     }
     virtualHub: {
-      id: virtualHub.id
+      id: parentVirtualHub.id
     }
     firewallPolicy: {
       id: firewallPolicyId
@@ -53,4 +57,4 @@ module diagnosticSettings 'log-analytics.bicep' = {
   }
 }
 
-output privateIPAddress string = firewall.properties.ipConfigurations[0].properties.privateIPAddress
+output privateIPAddress string = firewall.properties.hubIPAddresses.privateIPAddress

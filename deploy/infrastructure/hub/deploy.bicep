@@ -7,29 +7,6 @@ param location string
 
 var bastionName = 'bas-management'
 
-resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
-  name: 'vwan-hub'
-  location: location
-  properties: any({
-    type: 'Standard'
-    disableVpnEncryption: false
-    allowBranchToBranchTraffic: false
-    allowVnetToVnetTraffic: false
-    office365LocalBreakoutCategory: 'Optimize'
-  })
-}
-
-resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
-  name: 'vwan-virtualhub'
-  location: location
-  properties: {
-    addressPrefix: '10.0.0.0/23'
-    virtualWan: {
-      id: virtualWan.id
-    }
-  }
-}
-
 resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2022-07-01' = {
   name: 'rt-hub'
   parent: virtualHub
