@@ -5,7 +5,7 @@
 
 Azure Virtual WAN with secured virtual hub demo enables you quickly deploy following environment:
 
-TBA: Add diagram
+![Azure Virtual WAN with secured virtual hub demo architecture](https://user-images.githubusercontent.com/2357647/210327713-9b943871-acbf-4308-9db2-6f419472337c.png)
 
 ### In-Scope of demo
 
@@ -33,7 +33,6 @@ TBA: Add diagram
 
 To optimize costs some resource pricing tier decisions has been made:
 
-- VPN Gateway is `Generation1` and `VpnGw1AZ`
 - Jumpbox Ubuntu VM `Standard_B2s`
 - Estimated cost of demo environment: `< 20 EUR, < 20 USD per work day`
 
@@ -50,13 +49,19 @@ Azure infrastructure resources have been divided into following feature folders:
 │       ├───3-vnet
 │       ├───4-on-premises
 │       └───5-spoke
-└───infrastructure
-    ├───hub
+│           ├───spoke001
+│           ├───spoke002
+│           └───spoke003
+├───vwan
+└───workloads
+    ├───management
     └───spoke
 ```
 
-`infrastructure` folder contains deployment of virtual networks, subnets, virtual network peering,
-route tables, network security groups and sample test workload.
+`vwan` folder Virtual WAN and Hub related resources.
+
+`workloads` folder contains deployment of virtual networks, subnets,
+network security groups and sample workloads for management and testing connectivity.
 
 `firewall` folder contains deployment of Azure firewall. 
 
