@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 param virtualHubName string
 
 resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
-  name: 'vwan-hub'
+  name: 'vwan-main'
   location: location
   properties: {
     type: 'Standard'
@@ -22,12 +22,11 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
   }
 }
 
-module vpn 'vpn.bicep' = {
-  name: 'vpn-deployment'
+module expressRoute 'expressroute.bicep' = {
+  name: 'er-deployment'
   params: {
-    name: 'vgw-vpn'
+    name: 'ergw-${location}'
     location: location
-    parentVirtualWanName: virtualWan.name
     parentVirtualHubName: virtualHub.name
   }
 }

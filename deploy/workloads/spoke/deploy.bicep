@@ -1,5 +1,4 @@
 param parentVirtualHubName string
-param virtualHubRouteTableId string
 param spokeName string
 param vnetAddressSpace string
 param subnetAddressSpace string
@@ -78,8 +77,8 @@ module aci 'container-instances.bicep' = {
 }
 
 resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+  name: 'vhub-${spokeName}'
   parent: parentVirtualHub
-  name: 'hub-${spokeName}'
   properties: {
     remoteVirtualNetwork: {
       id: virtualNetwork.id
@@ -88,16 +87,6 @@ resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     allowRemoteVnetToUseHubVnetGateways: false
     enableInternetSecurity: true
     routingConfiguration: {
-      propagatedRouteTables: {
-        labels: [
-          'VNet'
-        ]
-        ids: [
-          {
-            id: virtualHubRouteTableId
-          }
-        ]
-      }
     }
   }
 }

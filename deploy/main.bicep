@@ -3,7 +3,7 @@ param username string
 param password string
 param location string = resourceGroup().location
 
-var virtualHubName = 'vwan-virtualhub'
+var virtualHubName = 'vhub-${location}'
 var virtualHubRouteTableName = 'rt-hub'
 
 module vwan 'vwan/deploy.bicep' = {
@@ -61,7 +61,6 @@ module workloads 'workloads/deploy.bicep' = {
   name: 'workloads-deployment'
   params: {
     parentVirtualHubName: virtualHubName
-    virtualHubRouteTableId: virtualHubRouteTable.id
     username: username
     password: password
     location: location

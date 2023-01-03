@@ -1,5 +1,4 @@
 param parentVirtualHubName string
-param virtualHubRouteTableId string
 param location string
 param username string
 @secure()
@@ -27,7 +26,6 @@ module hub 'management/deploy.bicep' = {
   name: 'management-deployment'
   params: {
     parentVirtualHubName: parentVirtualHubName
-    virtualHubRouteTableId: virtualHubRouteTableId
     username: username
     password: password
     location: location
@@ -38,7 +36,6 @@ module spokeDeployments 'spoke/deploy.bicep' = [for (spoke, i) in spokes: {
   name: '${spoke.name}-deployment'
   params: {
     parentVirtualHubName: parentVirtualHubName
-    virtualHubRouteTableId: virtualHubRouteTableId
     spokeName: spoke.name
     location: location
     vnetAddressSpace: spoke.vnetAddressSpace

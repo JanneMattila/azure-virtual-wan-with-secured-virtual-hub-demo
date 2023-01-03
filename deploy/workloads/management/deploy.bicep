@@ -1,5 +1,4 @@
 param parentVirtualHubName string
-param virtualHubRouteTableId string
 param username string
 @secure()
 param password string
@@ -46,8 +45,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 }
 
 resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+  name: 'vhub-management'
   parent: parentVirtualHub
-  name: 'hub-management'
   properties: {
     remoteVirtualNetwork: {
       id: virtualNetwork.id
@@ -56,16 +55,6 @@ resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     allowRemoteVnetToUseHubVnetGateways: false
     enableInternetSecurity: true
     routingConfiguration: {
-      propagatedRouteTables: {
-        labels: [
-          'VNet'
-        ]
-        ids: [
-          {
-            id: virtualHubRouteTableId
-          }
-        ]
-      }
     }
   }
 }
