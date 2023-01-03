@@ -65,6 +65,9 @@ module workloads 'workloads/deploy.bicep' = {
     password: password
     location: location
   }
+  dependsOn: [
+    vwan
+  ]
 }
 
 output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
