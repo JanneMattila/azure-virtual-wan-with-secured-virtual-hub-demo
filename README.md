@@ -1,7 +1,6 @@
 # Azure Virtual WAN with secured virtual hub demo
 
-> **Warning**
-> Work-in-progress based on another demo [Azure Firewall Demo](https://github.com/JanneMattila/azure-firewall-demo).
+> Based on another demo [Azure Firewall Demo](https://github.com/JanneMattila/azure-firewall-demo).
 
 Azure Virtual WAN with secured virtual hub demo enables you quickly deploy following environment:
 
@@ -122,7 +121,7 @@ And then the end-to-end test scenario like this:
 
 #### Spoke001
 
-- All traffic is routed to firewall
+- All traffic is routed to firewall using routing intent
 - Internet access via firewall
   - `github.com`
   - `bing.com`
@@ -134,9 +133,7 @@ And then the end-to-end test scenario like this:
 
 #### Spoke002
 
-- All traffic is routed to firewall
-- Internet access via firewall
-  - `github.com`
+- All traffic is routed to firewall using routing intent
 - VNet accesses
   - Full access to spoke001
   - No access to spoke003
@@ -144,8 +141,7 @@ And then the end-to-end test scenario like this:
 
 #### Spoke003
 
-- Traffic targeted to spoke001 address space is routed to firewall
-- Internet access via direct routing to internet
+- All traffic is routed to firewall using routing intent
 - No VNet network accesses
   - No allow firewall rules defined
 - No on-premises network access
@@ -209,7 +205,6 @@ AzureDiagnostics
 ```
 
 </details>
-
 
 ## Improvement ideas
 
