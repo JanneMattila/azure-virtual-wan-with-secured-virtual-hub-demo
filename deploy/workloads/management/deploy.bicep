@@ -6,11 +6,11 @@ param location string
 
 var bastionName = 'bas-management'
 
-resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2023-04-01' existing = {
   name: parentVirtualHubName
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: 'vnet-management'
   location: location
   properties: {
@@ -44,7 +44,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2023-04-01' = {
   name: 'vhub-management'
   parent: parentVirtualHub
   properties: {
@@ -54,8 +54,7 @@ resource spokeToHubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     allowHubToRemoteVnetTransit: true
     allowRemoteVnetToUseHubVnetGateways: false
     enableInternetSecurity: true
-    routingConfiguration: {
-    }
+    routingConfiguration: {}
   }
 }
 

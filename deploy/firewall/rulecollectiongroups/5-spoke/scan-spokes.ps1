@@ -1,8 +1,8 @@
-# https://docs.microsoft.com/en-us/azure/governance/resource-graph/samples/starter
+# https://learn.microsoft.com/en-us/azure/governance/resource-graph/samples/starter
 Install-Module -Name Az.ResourceGraph
 
 # Disable Ansi output
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_ansi_terminals
+# https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_ansi_terminals
 $PSStyle.OutputRendering = "PlainText"
 
 Set-Location .\deploy\firewall\rulecollectiongroups\5-spoke

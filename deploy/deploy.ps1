@@ -3,7 +3,7 @@ Param (
     [string] $ResourceGroupName = "rg-azure-vwan-with-secured-hub-demo",
 
     [Parameter(HelpMessage = "Deployment target resource group location")] 
-    [string] $Location = "North Europe",
+    [string] $Location = "Sweden Central",
 
     [Parameter(HelpMessage = "Management VM username")] 
     [string] $Username = "jumpboxuser",
@@ -49,7 +49,7 @@ $result = New-AzResourceGroupDeployment `
     -TemplateFile $Template `
     -TemplateParameterFile $TemplateParameters `
     @additionalParameters `
-    -Mode Complete -Force `
+    -Mode Incremental -Force `
     -Verbose
 
 $result

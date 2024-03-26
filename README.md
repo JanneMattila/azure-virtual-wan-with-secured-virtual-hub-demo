@@ -126,7 +126,7 @@ And then the end-to-end test scenario like this:
 - Internet access via firewall
   - `github.com`
   - `bing.com`
-  - `docs.microsoft.com`
+  - `learn.microsoft.com`
 - VNet accesses
   - Full access to spoke002
   - Http (port 80) access to spoke003
@@ -154,9 +154,9 @@ And then the end-to-end test scenario like this:
 
 1. Clone this repository to your own machine.
   - If you decide to download this as zip instead, then remember to `Unblock file` before extracting the content. 
-    Otherwise you might get `Run only scripts that you trust. While scripts from the internet can be useful,this script can potentially harm your computer. If you trust this script, use the Unblock-File cmdlet to allow the script to run without this warning message` error. See also [Unblock-File](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file) for more details.
-2. Update Azure `Az` PowerShell module ([instructions](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0))
-3. Install [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell)
+    Otherwise you might get `Run only scripts that you trust. While scripts from the internet can be useful,this script can potentially harm your computer. If you trust this script, use the Unblock-File cmdlet to allow the script to run without this warning message` error. See also [Unblock-File](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file) for more details.
+2. Update Azure `Az` PowerShell module ([instructions](https://learn.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0))
+3. Install [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell)
 4. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
   - Execute different script steps one-by-one (hint: use [shift-enter](https://github.com/JanneMattila/some-questions-and-some-answers/blob/master/q%26a/vs_code.md#automation-tip-shift-enter))
 
@@ -229,7 +229,7 @@ is great blog post and was one inspiration to built this demo.
 [Strong typing for parameters and outputs](https://github.com/Azure/bicep/issues/4158) would
 further improve way how `ruleCollections` are passed on to the `ruleCollectionGroups`.
 
-[Virtual network traffic routing](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
+[Virtual network traffic routing](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
 
 [Secured virtual hubs](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.network/fwm-docs-qs)
 

@@ -6,7 +6,7 @@ param name string
 param tier string = 'Standard'
 param location string = resourceGroup().location
 
-resource firewallPolicy 'Microsoft.Network/firewallPolicies@2021-05-01' = {
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
   name: name
   location: location
   properties: {

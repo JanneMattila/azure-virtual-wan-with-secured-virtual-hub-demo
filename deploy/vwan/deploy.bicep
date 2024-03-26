@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param virtualHubName string
 
-resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
   name: 'vwan-main'
   location: location
   properties: {
@@ -11,7 +11,7 @@ resource virtualWan 'Microsoft.Network/virtualWans@2022-07-01' = {
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2023-04-01' = {
   name: virtualHubName
   location: location
   properties: {

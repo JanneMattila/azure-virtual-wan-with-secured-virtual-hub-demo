@@ -2,7 +2,7 @@ param name string
 param subnetId string
 param location string
 
-resource aci 'Microsoft.ContainerInstance/containerGroups@2021-09-01' = {
+resource aci 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
   name: name
   location: location
   properties: {
@@ -10,7 +10,13 @@ resource aci 'Microsoft.ContainerInstance/containerGroups@2021-09-01' = {
       {
         name: 'webapp-network-tester'
         properties: {
-          image: 'jannemattila/webapp-network-tester:latest'
+          image: 'jannemattila/webapp-network-tester:1.0.69'
+          environmentVariables: [
+            {
+              name: 'ASPNETCORE_HTTP_PORTS'
+              value: '80'
+            }
+          ]
           ports: [
             {
               port: 80

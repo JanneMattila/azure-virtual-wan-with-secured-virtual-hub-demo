@@ -13,11 +13,11 @@ param skuName string = 'AZFW_Hub'
 param skuTier string = 'Standard'
 param location string = resourceGroup().location
 
-resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2023-04-01' existing = {
   name: parentVirtualHubName
 }
 
-resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
+resource firewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
   name: name
   location: location
   zones: [

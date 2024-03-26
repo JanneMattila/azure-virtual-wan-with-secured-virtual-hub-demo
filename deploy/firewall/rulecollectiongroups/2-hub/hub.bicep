@@ -17,7 +17,30 @@ resource hubRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollecti
         action: {
           type: 'Allow'
         }
-        rules: []
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'Hub to spokes'
+            description: 'Allow hub to spoke traffic'
+            ipProtocols: [
+              'Any'
+            ]
+            sourceAddresses: [
+              '10.10.0.0/21' // hub
+            ]
+            sourceIpGroups: []
+            destinationAddresses: [
+              '10.1.0.0/22' // spoke001
+              '10.2.0.0/22' // spoke002
+              '10.3.0.0/22' // spoke003
+            ]
+            destinationIpGroups: []
+            destinationFqdns: []
+            destinationPorts: [
+              '*'
+            ]
+          }
+        ]
       }
     ]
   }

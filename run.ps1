@@ -8,12 +8,13 @@
 ##################################
 
 # Remember to update you Azure Az PowerShell module!
-# https://learn.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-9.2.0
+# https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell?view=azps-11.4.0
 Update-Module Az
 
 # Remember to install Bicep!
-# https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell
-bicep --version # 0.13.1 or newer
+# https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell
+# https://github.com/Azure/bicep/releases
+bicep --version # 
 
 # Login to Azure
 Login-AzAccount
@@ -77,7 +78,7 @@ $plainTextPassword
 $plainTextPassword | clip
 
 # Connect to a VM using Bastion and the native client on your Windows computer
-# https://docs.microsoft.com/en-us/azure/bastion/connect-native-client-windows
+# https://learn.microsoft.com/en-us/azure/bastion/connect-native-client-windows
 az login -o none
 az network bastion ssh `
     --name $bastion `
@@ -91,32 +92,32 @@ spoke1="http://10.1.0.4"
 spoke2="http://10.2.0.4"
 spoke3="http://10.3.0.4"
 curl $spoke1
-# -> <html><body>Hello
+# -> Hello there!
 curl $spoke2
-# -> <html><body>Hello
+# -> Hello there!
 curl $spoke3
-# -> <html><body>Hello
+# -> Hello there!
 
 # Test outbound internet accesses
 BODY=$(echo "HTTP GET \"https://github.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl -X POST --data "$BODY" "$spoke3/api/commands" # Deny
 
 BODY=$(echo "HTTP GET \"https://www.microsoft.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (via firewall)
 
 BODY=$(echo "HTTP GET \"https://www.bing.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl -X POST --data "$BODY" "$spoke3/api/commands" # Deny
 
-BODY=$(echo "HTTP GET \"https://docs.microsoft.com\"")
+BODY=$(echo "HTTP GET \"https://learn.microsoft.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl -X POST --data "$BODY" "$spoke3/api/commands" # Deny
 
 # Test outbound vnet-to-vnet using http on port 80
 # Spoke001 -> Spoke002, Spoke003 - Both OK
@@ -129,14 +130,10 @@ curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke2/api/commands" # Deny
 
 # Spoke003 -> Spoke001 is denied by firewall
 curl -X POST --data  "HTTP GET \"$spoke1\"" "$spoke3/api/commands" # Deny
-# Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach the target server
-curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke3/api/commands" # Timeout
+curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke3/api/commands" # Deny
 
 # Exit ssh (our jumpbox)
 exit
-
-# https://learn.microsoft.com/en-us/powershell/module/az.compute/get-azvmruncommand?view=azps-9.2.0
-# Get-AzVMRunCommand
 
 ##################################
 #   ____ _

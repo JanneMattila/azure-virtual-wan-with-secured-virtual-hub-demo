@@ -6,11 +6,11 @@ param location string = resourceGroup().location
 
 var vnetName = 'vnet-${spokeName}'
 
-resource parentVirtualHub 'Microsoft.Network/virtualHubs@2021-08-01' existing = {
+resource parentVirtualHub 'Microsoft.Network/virtualHubs@2023-04-01' existing = {
   name: parentVirtualHubName
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
   name: 'nsg-${spokeName}-front'
   location: location
   properties: {
@@ -33,7 +33,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-0
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
   location: location
   tags: {
@@ -76,7 +76,7 @@ module aci 'container-instances.bicep' = {
   }
 }
 
-resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-07-01' = {
+resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2023-04-01' = {
   name: 'vhub-${spokeName}'
   parent: parentVirtualHub
   properties: {
@@ -86,7 +86,6 @@ resource spokeToVirtualHubNetworkConnection 'Microsoft.Network/virtualHubs/hubVi
     allowHubToRemoteVnetTransit: true
     allowRemoteVnetToUseHubVnetGateways: false
     enableInternetSecurity: true
-    routingConfiguration: {
-    }
+    routingConfiguration: {}
   }
 }

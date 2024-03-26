@@ -5,7 +5,7 @@ param name string
 param subnetId string
 param location string
 
-resource nic 'Microsoft.Network/networkInterfaces@2020-08-01' = {
+resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: 'nic-${name}'
   location: location
   properties: {
@@ -23,7 +23,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-08-01' = {
   }
 }
 
-resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
+resource ubuntuVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: name
   location: location
   properties: {

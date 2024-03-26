@@ -4,7 +4,7 @@ param password string
 param location string = resourceGroup().location
 
 var virtualHubName = 'vhub-${location}'
-var virtualHubRouteTableName = 'rt-hub'
+// var virtualHubRouteTableName = 'rt-hub'
 
 module vwan 'vwan/deploy.bicep' = {
   name: 'vwan-resources-deployment'
@@ -25,37 +25,40 @@ module firewall 'firewall/deploy.bicep' = {
   ]
 }
 
-resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2022-07-01' = {
-  name: '${virtualHubName}/${virtualHubRouteTableName}'
+resource virtualHubRoutingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-04-01' = {
+  name: '${virtualHubName}/hubRoutingIntent'
   properties: {
-    routes: [
+    routingPolicies: [
       {
-        name: 'Workload-SNToFirewall'
-        destinationType: 'CIDR'
+        name: 'Internet'
         destinations: [
-          '10.0.1.0/24'
+          'Internet'
         ]
-        nextHopType: 'ResourceId'
         nextHop: firewall.outputs.firewallId
       }
       {
-        name: 'InternetToFirewall'
-        destinationType: 'CIDR'
+        name: 'PrivateTraffic'
         destinations: [
-          '0.0.0.0/0'
+          'PrivateTraffic'
         ]
-        nextHopType: 'ResourceId'
         nextHop: firewall.outputs.firewallId
       }
-    ]
-    labels: [
-      'VNet'
     ]
   }
-  dependsOn: [
-    vwan
-  ]
 }
+
+// resource virtualHubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2023-04-01' = {
+//   name: '${virtualHubName}/${virtualHubRouteTableName}'
+//   properties: {
+//     routes: []
+//     labels: [
+//       'VNet'
+//     ]
+//   }
+//   dependsOn: [
+//     vwan
+//   ]
+// }
 
 module workloads 'workloads/deploy.bicep' = {
   name: 'workloads-deployment'
