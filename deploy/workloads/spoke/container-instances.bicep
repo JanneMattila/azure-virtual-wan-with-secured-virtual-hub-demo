@@ -10,7 +10,7 @@ resource aci 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
       {
         name: 'webapp-network-tester'
         properties: {
-          image: 'jannemattila/webapp-network-tester:1.0.69'
+          image: 'jannemattila/webapp-network-tester:1.0.74'
           environmentVariables: [
             {
               name: 'ASPNETCORE_HTTP_PORTS'

@@ -40,6 +40,18 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
           addressPrefix: '10.10.2.0/24'
         }
       }
+      {
+        name: 'snet-inbound'
+        properties: {
+          addressPrefix: '10.10.3.0/24'
+        }
+      }
+      {
+        name: 'snet-outbound'
+        properties: {
+          addressPrefix: '10.10.4.0/24'
+        }
+      }
     ]
   }
 }
