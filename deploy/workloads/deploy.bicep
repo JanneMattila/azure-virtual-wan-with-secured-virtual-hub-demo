@@ -15,13 +15,13 @@ var spokes = [
     name: 'spoke002'
     vnetAddressSpace: '10.2.0.0/22'
     subnetAddressSpace: '10.2.0.0/24'
-    location: location // 'northeurope'
+    location: location
   }
   {
     name: 'spoke003'
     vnetAddressSpace: '10.3.0.0/22'
     subnetAddressSpace: '10.3.0.0/24'
-    location: location // 'francecentral'
+    location: location
   }
 ]
 
